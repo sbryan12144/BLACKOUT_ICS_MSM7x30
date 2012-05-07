@@ -1,0 +1,4 @@
+#!/bin/bash
+
+make ace_defconfig
+make -j2 ARCH=arm CROSS_COMPILE=/home/bryan/android/arm-eabi-4.6-2011-09/bin/arm-eabi- ARCH=arm EXTRA_AFLAGS=-mfpu=neon
