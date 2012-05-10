@@ -51,12 +51,16 @@
 /* mv = (750mV + (raw * 25mV)) * (2 - VREF_SEL) */
 #define VDD_RAW(mv) (((MV(mv) / V_STEP) - 30) | VREG_DATA)
 
-#define MAX_AXI_KHZ 192000
+#define MAX_AXI_KHZ 201600
 
 #define PLL2_L_VAL_ADDR  (MSM_CLK_CTL_BASE + 0x33c)
 
-#define ACE_ACPU_MIN_UV_MV 700U
+#define ACE_ACPU_MIN_UV_MV 800U
+#ifdef CONFIG_NUTTER
 #define ACE_ACPU_MAX_UV_MV 1500U
+#else
+#define ACE_ACPU_MAX_UV_MV 1350U
+#endif
 
 struct clock_state {
 	struct clkctl_acpu_speed	*current_speed;
@@ -83,35 +87,38 @@ struct clkctl_acpu_speed {
 static struct clock_state drv_state = { 0 };
 
 static struct cpufreq_frequency_table freq_table[] = {
-	{ 0, 122000 },
-	{ 1, 230400 },
-	{ 2, 307200 },
-	{ 3, 384000 },
-	{ 4, 460800 },
-	{ 5, 537600 },
-	{ 6, 614400 },
-	{ 7, 691200 },
-	{ 8, 768000 },
-	{ 9, 844800 },
-	{ 10, 921600 },
-	{ 11, 998400 },
-	{ 12, 1075200 },
-	{ 13, 1152000 },
-	{ 14, 1228800 },
-	{ 15, 1305600 },
-	{ 16, 1382400 },
-	{ 17, 1459200 },
-	{ 18, 1536000 },
-	{ 19, 1612800 },
-#ifdef CONFIG_JESUS_PHONE
-	{ 20, 1689600 },
-	{ 21, 1766400 },
-	{ 22, 1843200 },
-	{ 23, 1920000 },
-//	{ 24, 1996800 },
-	{ 25, CPUFREQ_TABLE_END },
+	{ 0, 19200 },
+	{ 1, 96000 },
+	{ 2, 122000 },
+	{ 3, 245000 },
+	{ 4, 307200 },
+	{ 5, 384000 },
+	{ 6, 460800 },
+	{ 7, 537600 },
+	{ 8, 614400 },
+	{ 9, 691200 },
+	{ 10, 768000 },
+	{ 11, 844800 },
+	{ 12, 921600 },
+	{ 13, 998400 },
+	{ 14, 1075200 },
+	{ 15, 1152000 },
+	{ 16, 1228800 },
+	{ 17, 1305600 },
+	{ 18, 1382400 },
+	{ 19, 1459200 },
+	{ 20, 1536000 },
+	{ 21, 1612800 },
+	{ 22, 1689600 },
+	{ 23, 1766400 },
+	{ 24, 1843200 },
+	{ 25, 1920000 },
+	{ 26, 1996800 },
+	{ 27, 2016000 },
+#ifndef CONFIG_NUTTER
+	{ 20, CPUFREQ_TABLE_END },
 #else
-	{ 25, CPUFREQ_TABLE_END },
+	{ 23, CPUFREQ_TABLE_END },
 #endif
 };
 
@@ -119,38 +126,40 @@ static struct cpufreq_frequency_table freq_table[] = {
 #define SRC_LPXO (-2)
 #define SRC_AXI  (-1)
 static struct clkctl_acpu_speed acpu_freq_tbl[] = {
-	{ 24576,  SRC_LPXO, 0, 0,  30720,  850, VDD_RAW(900) },
-	{ 61440,  PLL_3,    5, 11, 61440,  900, VDD_RAW(900) },
-	{ 122880, PLL_3,    5, 5,  61440,  900, VDD_RAW(900) },
-	{ 184320, PLL_3,    5, 4,  61440,  900, VDD_RAW(900) },
-      { MAX_AXI_KHZ, SRC_AXI, 1, 0, 61440, 900, VDD_RAW(900) },
-//	{ 245000, PLL_3,    5, 2,  122500, 900, VDD_RAW(900) },
-	{ 122000, PLL_3,    5, 2,  61440,  875, VDD_RAW(900) },
-	{ 230400, PLL_3,    5, 1,  192000, 900, VDD_RAW(900) },
-	{ 307200, PLL_3,    5, 1,  192000, 900, VDD_RAW(900) },
-	{ 384000, PLL_1,    2, 0,  192000, 925, VDD_RAW(925) },
-	{ 460800, PLL_3,    5, 1,  192000, 950, VDD_RAW(950) },
-	{ 537600, PLL_2,    3, 0,  192000, 975, VDD_RAW(975) },
-	{ 614400, PLL_2,    3, 0,  192000, 975, VDD_RAW(975) },
-	{ 691200, PLL_2,    3, 0,  192000, 1000, VDD_RAW(1000) },
-	{ 768000, PLL_2,    3, 0,  192000, 1025, VDD_RAW(1050) },
-	{ 844800, PLL_2,    3, 0,  192000, 1025, VDD_RAW(1150) },
-	{ 921600, PLL_2,    3, 0,  192000, 1050, VDD_RAW(1150) },
-	{ 998400, PLL_2,    3, 0,  192000, 1050, VDD_RAW(1200) },
-	{ 1075200, PLL_2,   3, 0,  192000, 1075, VDD_RAW(1200) },
-	{ 1152000, PLL_2,   3, 0,  192000, 1075, VDD_RAW(1200) },
-	{ 1228800, PLL_2,   3, 0,  192000, 1100, VDD_RAW(1200) },
-	{ 1305600, PLL_2,   3, 0,  192000, 1175, VDD_RAW(1200) },
-	{ 1382400, PLL_2,   3, 0,  192000, 1200, VDD_RAW(1200) },
-	{ 1459200, PLL_2,   3, 0,  192000, 1225, VDD_RAW(1250) },
-	{ 1536000, PLL_2,   3, 0,  192000, 1300, VDD_RAW(1300) },
-	{ 1612800, PLL_2,   3, 0,  192000, 1350, VDD_RAW(1400) },
-#ifdef CONFIG_JESUS_PHONE
-	{ 1689600, PLL_2,   3, 0,  192000, 1400, VDD_RAW(1400) },
-	{ 1766400, PLL_2,   3, 0,  192000, 1425, VDD_RAW(1425) },
-	{ 1843200, PLL_2,   3, 0,  192000, 1450, VDD_RAW(1450) },
-	{ 1920000, PLL_2,   3, 0,  192000, 1475, VDD_RAW(1475) },
-//	{ 1996800, PLL_2,   3, 0,  192000, 1475, VDD_RAW(1475) },
+	{ 24576,  SRC_LPXO, 0, 0,  30720,  900, VDD_RAW(925) },
+	{ 61440,  PLL_3,    5, 11, 61440,  900, VDD_RAW(925) },
+	{ 122880, PLL_3,    5, 5,  61440,  900, VDD_RAW(925) },
+	{ 184320, PLL_3,    5, 4,  61440,  900, VDD_RAW(925) },
+	{ MAX_AXI_KHZ, SRC_AXI, 1, 0, 61440, 900, VDD_RAW(925) },
+	{   19200, PLL_3, 5, 2,  61440,  875, VDD_RAW(925) },
+	{   96000, PLL_3, 5, 2,  61440,  875, VDD_RAW(925) },
+	{  122000, PLL_3, 5, 2,  61440,  875, VDD_RAW(925) },
+	{  245000, PLL_3, 5, 1, 192000,  875, VDD_RAW(925) },
+	{  307200, PLL_3, 5, 1, 192000,  900, VDD_RAW(950) },
+	{  384000, PLL_1, 2, 0, 192000,  900, VDD_RAW(950) },
+	{  460800, PLL_3, 5, 1, 192000,  925, VDD_RAW(975) },
+	{  537600, PLL_2, 3, 0, 192000,  950, VDD_RAW(975) },
+	{  614400, PLL_2, 3, 0, 192000,  950, VDD_RAW(975) },
+	{  691200, PLL_2, 3, 0, 192000,  975, VDD_RAW(1025) },
+	{  768000, PLL_2, 3, 0, 192000, 1000, VDD_RAW(1025) },
+	{  844800, PLL_2, 3, 0, 192000, 1000, VDD_RAW(1050) },
+	{  921600, PLL_2, 3, 0, 192000, 1025, VDD_RAW(1075) },
+	{  998400, PLL_2, 3, 0, 192000, 1025, VDD_RAW(1075) },
+	{ 1075200, PLL_2, 3, 0, 192000, 1050, VDD_RAW(1125) },
+	{ 1152000, PLL_2, 3, 0, 192000, 1075, VDD_RAW(1125) },
+	{ 1228800, PLL_2, 3, 0, 192000, 1100, VDD_RAW(1150) },
+	{ 1305600, PLL_2, 3, 0, 192000, 1125, VDD_RAW(1175) },
+	{ 1382400, PLL_2, 3, 0, 192000, 1150, VDD_RAW(1200) },
+	{ 1459200, PLL_2, 3, 0, 192000, 1200, VDD_RAW(1250) },
+	{ 1536000, PLL_2, 3, 0, 192000, 1275, VDD_RAW(1300) },
+	{ 1612800, PLL_2, 3, 0, 199680, 1325, VDD_RAW(1350) },
+	{ 1689600, PLL_2, 3, 0, 199680, 1375, VDD_RAW(1400) },
+	{ 1766400, PLL_2, 3, 0, 199680, 1425, VDD_RAW(1425) },
+	{ 1843200, PLL_2, 3, 0, 199680, 1450, VDD_RAW(1450) },
+	{ 1920000, PLL_2, 3, 0, 199680, 1475, VDD_RAW(1475) },
+	{ 1996800, PLL_2, 3, 0, 199680, 1500, VDD_RAW(1500) },
+	{ 2016000, PLL_2, 3, 0, 201600, 1500, VDD_RAW(1500) },
+#ifdef CONFIG_NUTTER
 #endif
 	{ 0 }
 };
@@ -533,37 +542,38 @@ void __init msm_acpu_clock_init(struct msm_acpu_clock_platform_data *clkdata)
 
 ssize_t acpuclk_get_vdd_levels_str(char *buf)
 {
-int i, len = 0;
-if (buf)
-{
-mutex_lock(&drv_state.lock);
-for (i = 0; acpu_freq_tbl[i].acpu_clk_khz; i++)
-{
-len += sprintf(buf + len, "%8u: %4d\n", acpu_freq_tbl[i].acpu_clk_khz, acpu_freq_tbl[i].vdd_mv);
-}
-mutex_unlock(&drv_state.lock);
-}
-return len;
+	int i, len = 0;
+	if (buf)
+	{
+		mutex_lock(&drv_state.lock);
+		for (i = 0; acpu_freq_tbl[i].acpu_clk_khz; i++)
+		{
+			len += sprintf(buf + len, "%8u: %4d\n", acpu_freq_tbl[i].acpu_clk_khz, acpu_freq_tbl[i].vdd_mv);
+		}
+		mutex_unlock(&drv_state.lock);
+	}
+	return len;
 }
 
 void acpuclk_set_vdd(unsigned int khz, int vdd)
 {
-int i;
-unsigned int new_vdd;
-vdd = vdd / V_STEP * V_STEP;
-mutex_lock(&drv_state.lock);
-for (i = 0; acpu_freq_tbl[i].acpu_clk_khz; i++)
-{
-if (khz == 0)
-new_vdd = min(max((acpu_freq_tbl[i].vdd_mv + vdd), ACE_ACPU_MIN_UV_MV), ACE_ACPU_MAX_UV_MV);
-else if (acpu_freq_tbl[i].acpu_clk_khz == khz)
-new_vdd = min(max((unsigned int)vdd, ACE_ACPU_MIN_UV_MV), ACE_ACPU_MAX_UV_MV);
-else continue;
+	int i;
+	unsigned int new_vdd;
+	vdd = vdd / V_STEP * V_STEP;
+	mutex_lock(&drv_state.lock);
+	for (i = 0; acpu_freq_tbl[i].acpu_clk_khz; i++)
+	{
+		if (khz == 0)
+			new_vdd = min(max((acpu_freq_tbl[i].vdd_mv + vdd), ACE_ACPU_MIN_UV_MV), ACE_ACPU_MAX_UV_MV);
+		else if (acpu_freq_tbl[i].acpu_clk_khz == khz)
+			new_vdd = min(max((unsigned int)vdd, ACE_ACPU_MIN_UV_MV), ACE_ACPU_MAX_UV_MV);
+		else continue;
 
-acpu_freq_tbl[i].vdd_mv = new_vdd;
-acpu_freq_tbl[i].vdd_raw = VDD_RAW(new_vdd);
-}
-mutex_unlock(&drv_state.lock);
+		acpu_freq_tbl[i].vdd_mv = new_vdd;
+		acpu_freq_tbl[i].vdd_raw = VDD_RAW(new_vdd);
+	}
+	mutex_unlock(&drv_state.lock);
 }
 
 #endif
+
