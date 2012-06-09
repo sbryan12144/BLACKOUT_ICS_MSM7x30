@@ -1,9 +1,9 @@
-/* This file is auto generated, version 4 */
+/* This file is auto generated, version 5 */
 /*  PREEMPT */
 #define UTS_MACHINE "arm"
-#define UTS_VERSION "#4 PREEMPT Thu May 10 12:48:08 EDT 2012"
-#define LINUX_COMPILE_TIME "12:48:08"
-#define LINUX_COMPILE_BY "bryan"
-#define LINUX_COMPILE_HOST "ubuntu"
-#define LINUX_COMPILE_DOMAIN "ubuntu-domain"
+#define UTS_VERSION "#5 PREEMPT Sat Jun 9 09:04:34 CDT 2012"
+#define LINUX_COMPILE_TIME "09:04:34"
+#define LINUX_COMPILE_BY "sbryan12144"
+#define LINUX_COMPILE_HOST "sbryan12144"
+#define LINUX_COMPILE_DOMAIN "(none)"
 #define LINUX_COMPILER "gcc version 4.5.4 20111003 (prerelease) (Linaro GCC 4.5-2011.10) "
